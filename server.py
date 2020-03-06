@@ -13,15 +13,20 @@ es_url = os.environ['ELASTICSEARCH_URL']
 es_index = os.environ['ELASTICSEARCH_INDEX']
 es_doc_type = os.environ['ELASTICSEARCH_DOC_TYPE']
 all_orientations = os.environ['ALL_ORIENTATIONS']
+timeout = os.environ['SERVER_TIMEOUT']
 
 app = Flask(__name__)
-es = Elasticsearch([es_url], verify_certs=True, timeout=60, max_retries=10, retry_on_timeout=True)
+print('connecting to ES')
+es = Elasticsearch([es_url], verify_certs=True, timeout=timeout, max_retries=10, retry_on_timeout=True)
+print('connected to ES')
 ses = SignatureES(es, index=es_index, doc_type=es_doc_type)
 gis = ImageSignature()
 
 # Try to create the index and ignore IndexAlreadyExistsException
 # if the index already exists
+print('creating indices')
 es.indices.create(index=es_index, ignore=400)
+print('created indices')
 
 # =============================================================================
 # Helpers
